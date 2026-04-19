@@ -1,0 +1,84 @@
+<Project>
+<Name>EquiFlow: The Self-Healing AI Governance Engine</Name>
+<Scope>
+<Mission>To build an open-source, agentic protocol that audits AI models and datasets for hidden biases, translates raw statistical disparities into human-readable narratives, and provides an automated, self-healing correction loop.</Mission>
+<Features>
+<Feature name="Dual-Mode Ingestion">
+<Detail>White-Box: Accepts raw training datasets (CSV/SQL) to detect proxy variables and representation bias before a model is trained.</Detail>
+<Detail>Black-Box: Accepts API endpoints of black-box models to conduct adversarial testing using synthetic data generation.</Detail>
+</Feature>
+<Feature name="Adversarial Ghost Testing">Utilizes LLMs to generate thousands of synthetic "Ghost Personas" with controlled demographic variations to stress-test target models and record disparate impacts.</Feature>
+<Feature name="EquiLens Narrative Engine">Converts standard statistical parity metrics (like disparate impact ratios) into plain-English severity reports, explaining who is being harmed and why.</Feature>
+<Feature name="Auto-Mitigation Loop">
+<Detail>Generates and injects synthetic profiles to balance skewed datasets.</Detail>
+<Detail>Provides data-reweighting schemas.</Detail>
+<Detail>Outputs dynamic inference-time guardrail prompts to correct live AI behavior.</Detail>
+</Feature>
+<Feature name="Open Protocol Integration">Exposes the entire engine as a Model Context Protocol (MCP) server so external developers and enterprise systems can run fairness checks natively within their existing workflows.</Feature>
+</Features>
+</Scope>
+<TechStack>
+<Category name="Frontend">
+<Tool name="Framework">Next.js with TypeScript</Tool>
+<Tool name="Styling">Tailwind CSS</Tool>
+<Tool name="Visualization">Recharts or Chart.js</Tool>
+</Category>
+<Category name="Backend and API">
+<Tool name="Framework">Python (FastAPI) or Node.js</Tool>
+<Tool name="API Architecture">GraphQL or REST</Tool>
+<Tool name="Database">PostgreSQL</Tool>
+</Category>
+<Category name="AI and Agentic Core">
+<Tool name="LLM Engine">Gemini 1.5 Pro and Flash</Tool>
+<Tool name="Agent Framework">LangGraph or AutoGen</Tool>
+<Tool name="Interoperability">Model Context Protocol (MCP) SDK</Tool>
+</Category>
+<Category name="Data Processing and ML">
+<Tool name="Data Handling">Pandas and NumPy</Tool>
+<Tool name="Bias Metrics">AIF360 (AI Fairness 360) or Fairlearn</Tool>
+</Category>
+</TechStack>
+<ProjectStructure>
+<Directory name="equiflow-governance-engine">
+<Directory name="frontend">
+<File>components/</File>
+<File>pages/</File>
+<File>public/</File>
+<File>utils/</File>
+<File>tailwind.config.js</File>
+</Directory>
+<Directory name="backend-orchestrator">
+<File>api/</File>
+<File>database/</File>
+<Directory name="ml_pipeline">
+<File>dataset_scanner.py</File>
+<File>mitigators.py</File>
+</Directory>
+<File>main.py</File>
+<File>requirements.txt</File>
+</Directory>
+<Directory name="agent_core">
+<Directory name="agents">
+<File>ghost_generator.py</File>
+<File>adversarial_tester.py</File>
+<File>narrative_oracle.py</File>
+</Directory>
+<Directory name="workflows">
+<File>correction_loop.py</File>
+</Directory>
+<File>prompts/</File>
+</Directory>
+<Directory name="mcp_server">
+<File>index.js</File>
+<File>tools/</File>
+<File>package.json</File>
+</Directory>
+</Directory>
+</ProjectStructure>
+<ExecutionPhases>
+<Phase number="1" name="Core ML and Agents">Start by writing the Python scripts that can take a local CSV, run the AIF360 math, and use Gemini to generate the plain-English report.</Phase>
+<Phase number="2" name="API and Database">Wrap the core logic in a FastAPI service and hook it up to PostgreSQL to save the audit results.</Phase>
+<Phase number="3" name="Visual Layer">Build the Next.js UI where a user can upload a file, hit "Run Audit", and view the generated EquiLens dashboard.</Phase>
+<Phase number="4" name="Open Protocol">Finally, expose the established API endpoints through an MCP server so it functions as a global plug-and-play tool.</Phase>
+</ExecutionPhases>
+</Project>
