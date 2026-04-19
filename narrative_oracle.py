@@ -29,6 +29,7 @@ def generate_plain_english_report(metrics_json: str) -> str:
             model='gemini-2.5-flash',
             contents=prompt
         )
+        
         return response.text
     except Exception as e:
         return f"Error generating narrative report: {str(e)}"

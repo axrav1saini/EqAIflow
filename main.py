@@ -3,25 +3,15 @@ import pandas as pd
 from dataset_scanner import scan_for_bias
 from narrative_oracle import generate_plain_english_report, generate_recommendations
 
-def create_dummy_data(file_path: str):
-    """Creates a sample dataset with deliberate representation bias."""
-    # In this dataset, 'M' has an 80% hire rate, and 'F' has a 20% hire rate.
-    data = {
-        'gender': ['M', 'M', 'M', 'M', 'M', 'F', 'F', 'F', 'F', 'F'],
-        'hired':  [ 1,   1,   1,   1,   0,   0,   0,   0,   0,   1 ]
-    }
-    df = pd.DataFrame(data)
-    df.to_csv(file_path, index=False)
-    print(f"[*] Created dummy dataset at '{file_path}'")
-
 def main():
-    csv_path = "sample_bias_data.csv"
-    sensitive_col = "gender"
-    target_col = "hired"
+    csv_path = input("[?] Enter the path to the dataset CSV (e.g., datasets/recruitment_data.csv): ").strip()
+    sensitive_col = input("[?] Enter the sensitive column name (e.g., Gender, Age): ").strip()
+    target_col = input("[?] Enter the target column name (e.g., HiringDecision): ").strip()
 
     # 1. Setup Data
     if not os.path.exists(csv_path):
-        create_dummy_data(csv_path)
+        print(f"[-] No dataset found at '{csv_path}'")
+        return
 
     # 2. Run Scanner
     print("\n[+] Running Dataset Scanner...")
