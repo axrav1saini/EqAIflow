@@ -1,10 +1,11 @@
 import os
 import pandas as pd
-from dataset_scanner import scan_for_bias
+from dataset_scanner import scan_for_bias, map_columns_with_llm
 from narrative_oracle import generate_plain_english_report, generate_recommendations
 
 def main():
     csv_path = input("[?] Enter the path to the dataset CSV (e.g., datasets/recruitment_data.csv): ").strip()
+    dataset_desc = input("[?] Enter a brief dataset description (optional, hit Enter to skip): ").strip()
     sensitive_col = input("[?] Enter the sensitive column name (e.g., Gender, Age): ").strip()
     target_col = input("[?] Enter the target column name (e.g., HiringDecision): ").strip()
 
@@ -13,9 +14,21 @@ def main():
         print(f"[-] No dataset found at '{csv_path}'")
         return
 
+    df = pd.read_csv(csv_path)
+    available_columns = df.columns.tolist()
+
+    print(f"\n[*] Agentic Ingestion: Mapping user inputs '{sensitive_col}' and '{target_col}' to actual columns...")
+    actual_sensitive_list, actual_target = map_columns_with_llm(
+        sensitive_col, target_col, dataset_desc, available_columns
+    )
+    
+    # If user intentionally left it blank, override whatever the LLM guessed
+    if not sensitive_col:
+        actual_sensitive_list = []
+
     # 2. Run Scanner
     print("\n[+] Running Dataset Scanner...")
-    metrics_json = scan_for_bias(csv_path, sensitive_col, target_col)
+    metrics_json = scan_for_bias(csv_path, actual_sensitive_list, actual_target, dataset_desc)
     print("\n--- Raw Statistical Metrics ---")
     print(metrics_json)
 

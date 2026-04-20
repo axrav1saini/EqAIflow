@@ -26,7 +26,7 @@ def generate_plain_english_report(metrics_json: str) -> str:
     
     try:
         response = client.models.generate_content(
-            model='gemini-2.5-flash',
+            model='gemini-2.0-flash-lite',
             contents=prompt
         )
         

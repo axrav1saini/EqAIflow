@@ -11,7 +11,7 @@ load_dotenv()
 
 
 def map_columns_with_llm(
-    user_sensitive: str, user_target: str, available_columns: list
+    user_sensitive: str, user_target: str, dataset_description: str, available_columns: list
 ) -> tuple:
     """Uses Gemini to semantically map user input (with typos/synonyms) to actual dataset columns."""
     client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
@@ -19,6 +19,7 @@ def map_columns_with_llm(
     You are a data-mapping agent. The user typed the following column names (which may contain typos or be synonyms):
     User Sensitive Column: '{user_sensitive}'
     User Target Column: '{user_target}'
+    Dataset Description (Context): '{dataset_description}'
 
     The actual available columns in the dataset are:
     {available_columns}
@@ -28,7 +29,7 @@ def map_columns_with_llm(
     """
     try:
         response = client.models.generate_content(
-            model="gemini-2.5-flash", contents=prompt
+            model="gemini-2.0-flash", contents=prompt
         )
         raw_text = response.text.strip()
         if raw_text.startswith("```json"):
@@ -42,11 +43,12 @@ def map_columns_with_llm(
         return mapping.get("sensitive_columns", [user_sensitive] if user_sensitive else []), mapping.get(
             "target_column", user_target
         )
-    except Exception:
+    except Exception as e:
+        print(f"[-] LLM Mapping Error: {str(e)}")
         return [user_sensitive] if user_sensitive else [], user_target
 
 
-def scan_for_bias(csv_path: str, sensitive_feature_col: str, target_col: str) -> str:
+def scan_for_bias(csv_path: str, actual_sensitive_list: list, actual_target: str, dataset_description: str = "") -> str:
     """
     Scans a dataset for disparate impact and representation bias.
     Returns a JSON string of the metrics for the Narrative Oracle.
@@ -54,18 +56,6 @@ def scan_for_bias(csv_path: str, sensitive_feature_col: str, target_col: str) ->
     try:
         # 1. Load the dataset
         df = pd.read_csv(csv_path)
-
-        # Infer correct columns using LLM (handles typos and synonyms!)
-        print(
-            f"[*] Agentic Ingestion: Mapping user inputs '{sensitive_feature_col}' and '{target_col}' to actual columns..."
-        )
-        actual_sensitive_list, actual_target = map_columns_with_llm(
-            sensitive_feature_col, target_col, df.columns.tolist()
-        )
-
-        # If user intentionally left it blank, override whatever the LLM guessed
-        if not sensitive_feature_col:
-            actual_sensitive_list = []
 
         if actual_target not in df.columns:
             raise ValueError(
